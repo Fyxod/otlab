@@ -1,0 +1,57 @@
+clc;
+clear all;
+
+c=[3 -5];
+A=[1 1; 2 -1];
+b=[6;9];
+z=@(x1,x2) 3*x1-5*x2;
+c1=@(x1,x2) x1+x2-6;
+c2=@(x1,x2) 2*x1-x2-9;
+m=size(A,1);
+n=size(A,2);
+
+x1=0:max(b./A(:,1));
+
+for i=1:m
+    x2 = (b(i)-A(i,1)*x1)/A(i,2);
+    plot(x1,x2);
+    hold on;
+    grid on;
+end;
+
+clear figure;
+
+pts = [];
+
+A = [A; eye(2)];
+b = [b; zeros(2,1)];
+m = size(A,1);
+
+for i=1:m
+    for j=i+1:m
+        aa = [A(i,:) ; A(j,:)];
+        bb = [b(i) ; b(j)];
+        if(det(aa) ~= 0)
+            X = inv(aa)*bb;
+            if all(X >= 0)
+                pts = [pts X];
+            end;
+        end;
+    end;
+end;
+
+FP=[];
+Z=[];
+for i=1:size(pts,2)
+    pt1 = pts(1,i);
+    pt2 = pts(2,i);
+    if(c1(pt1, pt2)<=0 && c2(pt1, pt2)<=0)
+        FP = [FP pts(:, i)];
+        plot(pt1, pt2, '*r', 'markersize', 10);
+        cost = z(pt1, pt2);
+        Z = [Z cost];
+    end;
+end;
+
+[optimal_value, index] = min(Z)
+optimal_solution  = FP(:, index)
