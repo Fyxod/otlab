@@ -15,7 +15,11 @@ pair=nchoosek(1:n,m);
 for i=1:nCm
     y=zeros(n,1);
     bv_index=pair(i,:);
-    X=A(:,bv_index)\b;                    
+    B = A(:,bv_index);
+    if rank(B)<m
+        continue
+    end
+    X = B\b;                    
     y(bv_index)=X;
     basicSol=[basicSol y];
     if all(X>=0)
