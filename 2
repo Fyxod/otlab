@@ -1,0 +1,33 @@
+clc;
+clear all;
+
+c=[ 3 -5 0 0 ];
+A=[ 1 1 1 0 ; 2 -1 0 -1 ];
+b=[ 6 ; 9 ];
+z=@(x) c*x;
+m=size(A,1);
+n=size(A,2);
+basicSol=[];
+bfSol=[];
+
+nCm=nchoosek(n,m);
+pair=nchoosek(1:n,m);
+for i=1:nCm
+    y=zeros(n,1);
+    bv_index=pair(i,:);
+    X=A(:,bv_index)\b;                    
+    y(bv_index)=X;
+    basicSol=[basicSol y];
+    if all(X>=0)
+        bfSol=[bfSol y];
+    end
+end
+
+disp(basicSol);
+disp(bfSol);
+
+cost=z(bfSol);
+[opt_val index]=min(cost);
+opt_sol=bfSol(:,index);
+disp(opt_sol);
+disp(opt_val);
